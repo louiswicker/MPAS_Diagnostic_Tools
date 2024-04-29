@@ -3,6 +3,9 @@
 mpas_lqg.py is a command line tool to quickly interpolate 2D/3D fields associated with the MPAS grid 
 onto a quadralateral grid and writes out the fields to a new netCDF4 file.
 
+It is a lightweight interpolator written in Python. A more complete systemn is in 
+Larissa Reames's MPASSIT solution.  See https://github.com/LarissaReames-NOAA/MPASSIT
+
 ## usage: mpas_lqg.py [-h] [-i IN_GRID_FILE] [-d IN_DATA_FILE] [-o OUTFILE] [--nearest]
 
 options:
@@ -14,7 +17,7 @@ options:
 
 If you are converting an MPAS init file, or a history file, then only the IN_GRID_FILE needs to be specified.
 
-If you are converting a DART diagnostic file, it has no coorddinates, so the IN_GRID_FILE provides the coordinate,
+If you are converting a DART diagnostic file, it has no coordinates, so the IN_GRID_FILE provides the coordinate,
 but the IN_DATA_FILE (aka the DART diagnostic file) is the file that is converted.
 
 If you dont supply an output file, the suffix "_quad" will be added to the end of the filename.
