@@ -204,15 +204,15 @@ def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, \
         x_lcc, y_lcc = calc_MPAS_domain_info(ds, trans)
         
         xL_grid = min(x_lcc[2] - x_lcc[1], x_lcc[3] - x_lcc[0])
-        yL_grid = min(y_lcc[1] - y_lcc[0], y_lcc[3] - y_lcc[2])
-        
+        yL_grid = min(y_lcc[0] - y_lcc[1], y_lcc[2] - y_lcc[3])
+
         if nx < 0:   # create new grid based on _dx and data grid domain
             nx = np.floor( xL_grid / dx ) - 2  # shrink it a bit
             xL = nx * dx
             ny = np.floor( yL_grid / dx ) - 2
             yL = ny * dx
             xg = x_lcc.mean() + dx*(-nx/2 + np.arange(nx))
-            yg = y_lcc.mean() + dx*(-ny/2 + np.arange(ny))
+            yg = y_lcc.mean() - dx*( ny/2 + np.arange(ny))
             
         else:  # divide the data grid domain into _nx & _ny points
             dx = 0.95*xL_grid/float(nx)
@@ -339,7 +339,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
     
                 fld_interp = np.array(fld_interp).reshape(ntimes, ny, nx)
              
-            interp_arrays[key] = [len(fldC.shape), fld_interp, ntimes, ny, nx]
+            interp_arrays[key] = [len(fldC.shape), fld_interp[:,::-1,:], ntimes, ny, nx]
         
         elif fldC.ndim == 3:
     
@@ -362,7 +362,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
                 fld_interp = np.array(fld_interp).reshape(ntimes,nlevels,ny,nx)
              
             
-            interp_arrays[key] = [len(fldT.shape), fld_interp, ntimes, nlevels, ny, nx]
+            interp_arrays[key] = [len(fldT.shape), fld_interp[:,:,::-1,:], ntimes, nlevels, ny, nx]
             
         else:
             print("\n CALC_MPAS_QUAD_GRID: %s variable is not yet implemented, dimensions are wrong - DIMS:  %i3.3" \
