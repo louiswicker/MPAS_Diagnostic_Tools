@@ -32,6 +32,17 @@ def MPAS_lqg(in_grid_file, in_data_file, out_filename, nearest=True):
     ntimes  = ds_data.Time.shape[0]
     ds_data.close()
 
+    ds_grid = xr.open_dataset(in_grid_file)
+    try:
+        if ds_grid.on_a_sphere == "YES":
+            sphere = True
+    except:
+        sphere = False
+    ds_grid.close()
+
+    print(sphere)
+
+
     if debug > 100:
         calc_MPAS_grid_stat( in_grid_file )
 
@@ -42,7 +53,7 @@ def MPAS_lqg(in_grid_file, in_data_file, out_filename, nearest=True):
 
     new_grid = calc_MPAS_quad_grid( in_data_file, xC, yC, xg, yg, out_vars = output_variables, nearest = nearest )
 
-    write_MPAS_quad_netCDF( new_grid, xg, yg, zg, ntimes, out_filename )
+    write_MPAS_quad_netCDF( new_grid, xg, yg, zg, ntimes, out_filename, latlon=sphere )
 
 #=======================================================================================================
 

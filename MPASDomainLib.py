@@ -72,7 +72,7 @@ def get_wps_param_value(wps_file, param_name, vartype):
 
 #====================================================================================================
 
-def get_transformer(wps_file):
+def get_transformer(wps_file, latlon2xy = True):
 
     ref_lat = get_wps_param_value(wps_file, 'ref_lat', 'float')
     ref_lon = get_wps_param_value(wps_file, 'ref_lon', 'float')
@@ -81,7 +81,11 @@ def get_transformer(wps_file):
 
     proj_daymet = '+proj=lcc +lon_0=%f +lat_1=%f +lat_2=%f' % (ref_lon, par_lat1 , par_lat2)
     
-    return Transformer.from_crs("EPSG:4326", proj_daymet, always_xy=True)
+    if latlon2xy:
+        return Transformer.from_crs("EPSG:4326", proj_daymet, always_xy=True)
+        
+    else:
+        return Transformer.from_crs(proj_daymet, "EPSG:4326", always_xy=True)
 
 #=======================================================================================================
 #
@@ -378,25 +382,53 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
 #
 #=======================================================================================================
 
-def write_MPAS_quad_netCDF( arrays, xg, yg, zg, ntimes, outfile ):
+def write_MPAS_quad_netCDF( arrays, xg, yg, zg, ntimes, outfile, latlon=False ):
 
     # Write to XARRAY file (netCDF4)
     
+    if latlon:
+    
+        xx, yy     = np.meshgrid(xg,yg)
+        trans      = get_transformer( "", latlon2xy=False )  # gets info for map projection
+        lonC, latC = trans.transform( xx, yy )
+        latC = latC[::-1,:]
+    
     for n, key in enumerate(arrays):
             
-        if arrays[key][0] == 2:  # 2D spatial data set like precip
+        if arrays[key][0] == 2:  # 2D spatial data set like precip, t2m, q2m
+        
+            if latlon:
             
-            new = xr.DataArray( arrays[key][1], dims=['nt', 'ny', 'nx'],
-                                coords={"time": (["nt"], np.arange(ntimes)),
-                                        "x": (["nx"], xg),
-                                        "y": (["ny"], yg) } )
+                new = xr.DataArray( arrays[key][1], dims=['nt', 'ny', 'nx'],
+                        coords={"time": (["nt"], np.arange(ntimes)),
+                                "lon": (["ny","nx"], lonC),
+                                "lat": (["ny","nx"], latC) } )
+
+            
+            else:
+            
+                new = xr.DataArray( arrays[key][1], dims=['nt', 'ny', 'nx'],
+                                    coords={"time": (["nt"], np.arange(ntimes)),
+                                            "x": (["nx"], xg),
+                                            "y": (["ny"], yg) } )
+
         else:
+
+            if latlon:
+                new = xr.DataArray( arrays[key][1], dims = ['nt', 'nz', 'ny', 'nx'],
+                                    coords={"time": (["nt"], np.arange(ntimes)),
+                                             "lon": (["ny","nx"], lonC),
+                                             "lat": (["ny","nx"], latC),
+                                               "z": (["nz"], zg) } )
+
+
+            else:
             
-            new = xr.DataArray( arrays[key][1], dims = ['nt', 'nz', 'ny', 'nx'],
-                                coords={"time": (["nt"], np.arange(ntimes)),
-                                        "x": (["nx"], xg),
-                                        "y": (["ny"], yg),
-                                        "z": (["nz"], zg) } )
+                new = xr.DataArray( arrays[key][1], dims = ['nt', 'nz', 'ny', 'nx'],
+                                    coords={"time": (["nt"], np.arange(ntimes)),
+                                            "x": (["nx"], xg),
+                                            "y": (["ny"], yg),
+                                            "z": (["nz"], zg) } )
             
         if n == 0:
     
