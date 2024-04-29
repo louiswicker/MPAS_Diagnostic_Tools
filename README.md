@@ -34,4 +34,4 @@ Right now, the list of variables that are converted is limited by those at the t
 output_variables = {'w':'w', 'u':'uReconstructZonal', 'v':'uReconstructMeridional', 'theta': 'theta',
                     'surface_pressue': 'surface_pressure', 'q2': 'q2', 't2m':'t2m'}
                     
-This capability will be expanded and improved.
+Suggestions welcome.
