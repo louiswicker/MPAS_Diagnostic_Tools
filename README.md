@@ -1,5 +1,5 @@
 # MPAS Tool: Lou's Quick Gridder
-#------------------------------
+##------------------------------
 mpas_lqg.py is a command line tool to quickly interpolate 2D/3D fields associated with the MPAS grid 
 onto a quadralateral grid and writes out the fields to a new netCDF4 file.
 
@@ -9,16 +9,15 @@ Larissa Reames's MPASSIT solution.  See https://github.com/LarissaReames-NOAA/MP
 MPASSIT converts an MPAS history file to appear like a WRF history file, so that standard tools can be used (like UPP).
 
 
-#------------------------------
-# usage: mpas_lqg.py [-h] [-i IN_GRID_FILE] [-d IN_DATA_FILE] [-o OUTFILE] [--nearest]
-#------------------------------
+**usage:** mpas_lqg.py [-h] [-i IN_GRID_FILE] [-d IN_DATA_FILE] [-o OUTFILE] [--nearest]
 
 options:
-  -h, --help       show this help message and exit
-  -i IN_GRID_FILE  Input file from MPAS which has grid information
-  -d IN_DATA_FILE  Input file from MPAS which has data, if same as grid file, not needed
-  -o OUTFILE       Filename for interpolated out from MPAS on quad grid
-  --nearest        Flag to turn on 5 pt IDW interpolation
+
+* -h, --help       show this help message and exit
+* -i IN_GRID_FILE  Input file from MPAS which has grid information
+* -d IN_DATA_FILE  Input file from MPAS which has data, if same as grid file, not needed
+* -o OUTFILE       Filename for interpolated out from MPAS on quad grid
+* --nearest        Flag to turn on 5 pt IDW interpolation
 
 If you are converting an MPAS init file, or a history file, then only the IN_GRID_FILE needs to be specified.
 
