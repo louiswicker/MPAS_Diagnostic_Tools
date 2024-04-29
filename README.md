@@ -1,13 +1,15 @@
 # MPAS Tool: Lou's Quick Gridder
-##------------------------------
+#------------------------------
 
 mpas_lqg.py is a command line tool to quickly interpolate 2D/3D fields associated with the MPAS grid 
 onto a quadralateral grid and writes out the fields to a new netCDF4 file.
 
-It is a lightweight interpolator written in Python. A more complete systemn is in 
+MPAS_LQG is a lightweight interpolator written in Python. A more complete converter is in 
 Larissa Reames's MPASSIT solution.  See https://github.com/LarissaReames-NOAA/MPASSIT
 
-MPASSIT converts an MPAS history file to appear like a WRF history file, so that standard tools can be used (like UPP).
+* **MPASSIT** converts an MPAS history file to appear like a WRF history file, so that standard tools can be used (like UPP).
+
+* **MPAS_LQG** was originally built to regrid MPAS planer output from idealized runs. The ability to regrid from a real data MPAS run was added to examine output files from DART which have no geographic information.
 
 
 **USAGE:** mpas_lqg.py [-h] [-i IN_GRID_FILE] [-d IN_DATA_FILE] [-o OUTFILE] [--nearest]
