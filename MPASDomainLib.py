@@ -14,8 +14,6 @@
 import numpy as np
 import cartopy.crs as ccrs
 from pyproj import Transformer
-import shapely.geometry as sgeom
-from copy import copy
 import xarray as xr
 import re  # regular expression
 import os.path
