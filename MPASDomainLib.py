@@ -120,18 +120,28 @@ def calc_MPAS_grid_stat( filename, ds_in = None ):
     yV = ds.yVertex.values
     dis_center = ds.dcEdge.values
     
+    print("\n")
+
     print("MPAS Lats: ",latC.min(), latC.max(), (latC.max()-latC.min()))
     print("MPAS Lons: ",lonC.min()-180., lonC.max()-180., (lonC.max()-lonC.min()))
+
+    print("\n")
     
     print("MPAS xC (KM): ", _scale*xC.min(), _scale*xC.max(), _scale*(xC.max()-xC.min()))
     print("MPAS yC (KM): ", _scale*yC.min(), _scale*yC.max(), _scale*(yC.max()-yC.min()))
     print("MPAS zC (KM): ", _scale*zC.min(), _scale*zC.max())
     
+    print("\n")
+
     print("MPAS xV (KM): ", _scale*xV.min(), _scale*xV.max(), _scale*(xV.max()-xV.min()))
     print("MPAS yV (KM): ", _scale*yV.min(), _scale*yV.max(), _scale*(yV.max()-yV.min()))
     
+    print("\n")
+
     print("MPAS Cell Area: ",areaC.min(), areaC.max())
     print("MPAS cell center distances: ", dis_center.min(), dis_center.max(), dis_center.std())
+
+    print("\n")
 
     print("MPAS cell distances < 2.9 km ", np.sum(dis_center < 2900.))
     print("MPAS cell distances > 3.1 km ", np.sum(dis_center > 3100.))

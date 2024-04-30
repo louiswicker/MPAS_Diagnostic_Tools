@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     if args.in_grid_file == "":
         print("\n MPAS_LQG:  You must specify an MPAS file with grid information!!!")
-        parser.help()
+        parser.print_help()
         sys.exit(1)   
     else:
         in_grid_file = args.in_grid_file
