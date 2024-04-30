@@ -42,6 +42,16 @@ output_variables = {'w':'w', 'u':'uReconstructZonal', 'v':'uReconstructMeridiona
 **MPAS_GRID_STAT.py** is a tools that prints statistics out from your mpas grid 
 
 
+**USAGE:** mpas_grid_stat.py [-h] [-i IN_GRID_FILE] 
+
+options:
+
+* -h, --help       show this help message and exit
+* -i IN_GRID_FILE  Input file from MPAS which has grid information
+
+
+==================
+
 Python Libs Needed
 ==================
 
