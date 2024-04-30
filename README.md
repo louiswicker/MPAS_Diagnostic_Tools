@@ -1,5 +1,5 @@
 # MPAS Tool: Lou's Quick Gridder
-#------------------------------
+================================
 
 **MPAS_LQG.py** is a command line tool to quickly interpolate 2D/3D fields associated with the MPAS grid 
 onto a quadralateral grid and writes out the fields to a new netCDF4 file.
@@ -36,8 +36,14 @@ Right now, the list of variables that are converted is limited by those at the t
 output_variables = {'w':'w', 'u':'uReconstructZonal', 'v':'uReconstructMeridional', 'theta': 'theta',
                     'surface_pressue': 'surface_pressure', 'q2': 'q2', 't2m':'t2m'}
 
+# MPAS Tool: Grid Stat
+================================
+
+**MPAS_GRID_STAT.py** is a tools that prints statistics out from your mpas grid 
+
+
 Python Libs Needed
-------------------
+==================
 
 * argparse
 * numpy
