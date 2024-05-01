@@ -191,7 +191,7 @@ def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, \
         ds = ds_in
         
     try:
-        isgridfile = ds.xCell.values
+        isgridfile = ds.latCell.values
     except KeyError:
         print("\n CALC_MPAS_NEW_GRID: mpas file does not have coordinates, exiting...\n")
         sys.exit(1)   

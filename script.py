@@ -5,6 +5,7 @@ import os as os
 import sys
 import argparse
 from MPASDomainLib import *
+from pathlib import Path
 
 _wps_file = 'namelist.wps'
 
@@ -15,10 +16,11 @@ _ny = 300
 debug = 11
 
 dir = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/dacycles.noise4'
+in_grid_file = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/init/wofs_mpas_01.init.nc'
 
 
-output_variables = {'w':'w', 'u':'uReconstructZonal', 'v':'uReconstructMeridional', 'dbz': 'refl10cm',
-                    'qr': 'qr', 'surface_pressue': 'surface_pressure', 'q2': 'q2', 't2m':'t2m'}
+output_variables = {'w':'w', 'u':'uReconstructZonal', 'v':'uReconstructMeridional', 
+                    'qr': 'qr', 'surface_pressue': 'surface_pressure', 'q2': 'q2', 't2m':'t2m', 'dbz': 'refl10cm'}
                     
 #=======================================================================================================
 #
@@ -63,12 +65,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('-i', dest="in_grid_file", type=str,
-                        help="Input file from MPAS which has grid information", default="")
-                        
     parser.add_argument('-d', dest="in_data_file", type=str,
                         help="Input file from MPAS which has data, if same as grid file, not needed",default="")
-                        
+
     parser.add_argument('-o', dest="outfile", type=str, \
                         help="Filename for interpolated out from MPAS on quad grid", default="")
 
@@ -77,25 +76,33 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.in_grid_file == "":
-        print("\n MPAS_LQG:  You must specify an MPAS file with grid information!!!")
-        parser.print_help()
-        sys.exit(1)   
-    else:
-        in_grid_file = args.in_grid_file
-
     if args.in_data_file == "":
-        in_data_file = in_grid_file
+        print(" NO DATA FILE ")
+        sys.exit(1)
     else:
-        in_data_file = args.in_data_file
-    
-    if args.outfile == "":  
-        out_filename = ("%s_quad.nc") % in_data_file[0:-3]
-    else:
-        out_filename = args.outfile     
+        ldir = args.in_data_file[0:5]
+        basename = os.path.basename(args.in_data_file)
+        in_data_file = os.path.join(dir, args.in_data_file)
+        path = Path(ldir)
+        path.mkdir(exist_ok=True)
+        print("\n Made directory %s" % ldir)
 
-    nearest = args.nearest
+    if args.outfile == "":
+        out_filename = ("%s_quad.nc") % os.path.join(ldir, basename[0:-3])
+    else:
+        out_filename = args.outfile
+
+    nearest = True
+
+    for n in np.arange(18):
     
-    MPAS_lqg( in_grid_file, in_data_file, out_filename, nearest=nearest)
+        print( basename[0:-12] )
+        new_data_file = "%s_%2.2i.analysis" % (basename[0:-12],n+1)
+
+
+        in_data_file = os.path.join(dir, ldir, new_data_file)
+        print(" Processing:  %s" % in_data_file)
+
+        MPAS_lqg( in_grid_file, in_data_file, out_filename, nearest=nearest)
     
     print("\n Finished MPAS_LQG process")
