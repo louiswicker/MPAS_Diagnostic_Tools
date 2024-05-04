@@ -17,9 +17,17 @@ debug = 11
 dir = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/dacycles.noise4'
 
 
-output_variables = {'w':'w', 'u':'uReconstructZonal', 'v':'uReconstructMeridional', 'dbz': 'refl10cm',
-                    'qr': 'qr', 'surface_pressue': 'surface_pressure', 'q2': 'q2', 't2m':'t2m'}
+varlist = ['w', 'uReconstructZonal', 'uReconstructMeridional', 'refl10cm', 'surface_pressure', 'q2', 't2m',
+           'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh', 'volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh']
                     
+#=======================================================================================================
+#
+def list2dict(list1, list2):
+
+    return dict(zip(list1, list2))
+
+output_variables = list2dict(varlist, varlist)
+
 #=======================================================================================================
 #
 #
@@ -41,9 +49,6 @@ def MPAS_lqg(in_grid_file, in_data_file, out_filename, nearest=True):
     except:
         sphere = False
     ds_grid.close()
-
-    print(sphere)
-
 
     if debug > 100:
         calc_MPAS_grid_stat( in_grid_file )

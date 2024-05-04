@@ -446,12 +446,12 @@ def write_MPAS_quad_netCDF( arrays, xg, yg, zg, ntimes, outfile, latlon=False ):
     
             ds_new[key] = new
             
-        print("Wrote %s" % key)
+        print(" Wrote %s" % key)
     
     ds_new.to_netcdf(outfile, mode='w')
     ds_new.close()
     
-    print(f'Successfully wrote interpolated MPAS data to file:: {outfile}','\n')
+    print(f'\n Successfully wrote interpolated MPAS data to file:: {outfile}','\n')
 
 #====================================================================================================
 # WRF CODE
