@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument('--interp', dest="interp", action='store_true', \
                         help="Flag to turn on 5 pt IDW interpolation", default=False)
 
-   parser.add_argument('--config', dest="config", type=str, \
+    parser.add_argument('--config', dest="config", type=str, \
                         help="YAML configuration file to read, default is config.yaml", default="config.yaml")
 
     args = parser.parse_args()
