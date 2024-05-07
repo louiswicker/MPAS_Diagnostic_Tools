@@ -30,40 +30,6 @@ def list2dict(list1, list2):
 output_variables = list2dict(varlist, varlist)
 
 #=======================================================================================================
-#
-#
-#  MPAS_LQG:  Lou's Quick reGrider for MPAS history files, and DART output files based on the MPAS grid
-#
-# 
-#=======================================================================================================
-
-def MPAS_lqg( in_grid_file, in_data_file, out_filename, interp=False ):
-
-    ds_data = xr.open_dataset(in_data_file)
-    ntimes  = ds_data.Time.shape[0]
-    ds_data.close()
-
-    ds_grid = xr.open_dataset(in_grid_file)
-    try:
-        if ds_grid.on_a_sphere == "YES":
-            sphere = True
-    except:
-        sphere = False
-    ds_grid.close()
-
-    if debug > 100:
-        calc_MPAS_grid_stat( in_grid_file )
-
-    # Most of the work in the main routine is setting up a new horizontal grid
-
-    xg, yg, zg, xC, yC, zC = calc_MPAS_new_grid(in_grid_file, wps_file =_wps_file, 
-                                                nx = _nx, ny = _ny, xL_grid = _xL, yL_grid = _xL)
-
-    new_grid = calc_MPAS_quad_grid( in_data_file, xC, yC, xg, yg, out_vars = output_variables, interp=interp )
-
-    write_MPAS_quad_netCDF( new_grid, xg, yg, zg, ntimes, out_filename, latlon=sphere )
-
-#=======================================================================================================
 
 if __name__ == "__main__":
 
