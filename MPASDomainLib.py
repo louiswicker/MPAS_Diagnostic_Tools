@@ -18,6 +18,7 @@ import xarray as xr
 import re  # regular expression
 import os.path
 from scipy.spatial import KDTree
+from cbook10 import list2dict, read_yaml
 
 debug = 0
 
@@ -42,7 +43,7 @@ default_params = {
 #
 #=======================================================================================================
 
-def MPAS_lqg( in_grid_file, in_data_file, out_filename, interp=False ):
+def MPAS_lqg( in_grid_file, in_data_file, out_filename, ConfigFile='config.yaml', interp=False ):
 
     ds_data = xr.open_dataset(in_data_file)
     ntimes  = ds_data.Time.shape[0]
@@ -58,6 +59,14 @@ def MPAS_lqg( in_grid_file, in_data_file, out_filename, interp=False ):
 
     if debug > 100:
         calc_MPAS_grid_stat( in_grid_file )
+
+    # Read input configuration file
+
+    config = read_yaml(ConfigFile)
+
+    output_variables = list2dict(config['VarList'], config['VarList'])
+
+    _wps_file, _xL, _nx, _ny = config['QuadGrid']
 
     # Most of the work in the main routine is setting up a new horizontal grid
 

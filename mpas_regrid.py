@@ -5,29 +5,13 @@ import os as os
 import sys
 import argparse
 from MPASDomainLib import *
-
-_wps_file = 'namelist.wps'
-
-_xL = 900.e3
-_nx = 300
-_ny = 300
+import yaml
+from cbook10 import list2dict, read_yaml
 
 debug = 11
 
 dir = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/dacycles.noise4'
 
-
-varlist = ['w', 'uReconstructZonal', 'uReconstructMeridional', 'refl10cm', 'surface_pressure', 'q2', 't2m',
-           'theta', 'rho', 'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh', 
-           'volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh']
-                    
-#=======================================================================================================
-#
-def list2dict(list1, list2):
-
-    return dict(zip(list1, list2))
-
-output_variables = list2dict(varlist, varlist)
 
 #=======================================================================================================
 
@@ -47,10 +31,13 @@ if __name__ == "__main__":
     parser.add_argument('--interp', dest="interp", action='store_true', \
                         help="Flag to turn on 5 pt IDW interpolation", default=False)
 
+    parser.add_argument('--config', dest="config", type=str, \
+                        help="YAML configuration file to read, default is config.yaml", default="config.yaml")
+
     args = parser.parse_args()
 
     if args.in_grid_file == "":
-        print("\n MPAS_LQG:  You must specify an MPAS file with grid information!!!")
+        print("\n MPAS_REGRID:  You must specify an MPAS file with grid information!!!")
         parser.print_help()
         sys.exit(1)   
     else:
@@ -66,8 +53,13 @@ if __name__ == "__main__":
     else:
         out_filename = args.outfile     
 
-    interp = args.interp
-    
-    MPAS_lqg( in_grid_file, in_data_file, out_filename, interp=interp )
+    if args.interp == True:
+        print("\n MPAS_REGRID:  5-pt IDW interpolation used (1/dis^2)")
+        interp = args.interp
+    else:
+        print("\n MPAS_REGRID:  Nearest neighbor interpolation used ")
+        interp = args.interp
+
+    MPAS_lqg( in_grid_file, in_data_file, out_filename, ConfigFile=args.config, interp=interp )
     
     print("\n Finished MPAS_LQG process")
