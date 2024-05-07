@@ -7,7 +7,7 @@ import argparse
 from datetime import time, datetime, timedelta
 from pathlib import Path
 
-from mpas_lqg import * 
+from MPASDomainLib import * 
 
 #=======================================================================================================
 #
@@ -65,6 +65,9 @@ if __name__ == "__main__":
 
     parser.add_argument('--interp', dest="interp", action='store_true', \
                         help="Flag to turn on 5 pt IDW interpolation", default=False)
+
+   parser.add_argument('--config', dest="config", type=str, \
+                        help="YAML configuration file to read, default is config.yaml", default="config.yaml")
 
     args = parser.parse_args()
 
@@ -124,11 +127,13 @@ if __name__ == "__main__":
     else:
         nc_dif = args.diff
 
-    if args.interp:
-        interp = True
+    if args.interp == True:
+        print("\n MPAS_REGRID:  5-pt IDW interpolation used (1/dis^2)")
+        interp = args.interp
     else:
-        interp = False
-        
+        print("\n MPAS_REGRID:  Nearest neighbor interpolation used ")
+        interp = args.interp
+
 #=======================================================================================================
 
 # Create local prior and posterior directories
@@ -180,7 +185,7 @@ if __name__ == "__main__":
             print("\n Now computing %s " % prior_quad_filename)
 
             if run_it:
-                MPAS_lqg( _in_grid_file,  prior_filename, prior_quad_filename, interp=interp )
+                MPAS_lqg( _in_grid_file,  prior_filename, prior_quad_filename, ConfigFile=args.config, interp=interp )
 
         else:
             print("\n ERROR:  PRIOR member does not exist...Exiting script\n")
@@ -210,7 +215,7 @@ if __name__ == "__main__":
             print("\n Now computing %s " % post_quad_filename)
 
             if run_it:
-                MPAS_lqg( _in_grid_file,  post_filename, post_quad_filename, interp=interp )
+                MPAS_lqg( _in_grid_file,  post_filename, post_quad_filename, ConfigFile=args.config, interp=interp )
 
         else:
             print("\n ERROR:  POSTERIOR member does not exist...Exiting script\n")
