@@ -24,11 +24,11 @@ _members = 1 + np.arange(3)   # generate any list that you want...
 src_dir_top = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs'
 src_day     = '20240410'
 
-_in_grid_file = '/work/wicker/MPAS_Diagnostic_Tools/20240410/wofs_mpas_01.init.nc'
+_in_grid_file = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/init/wofs_mpas_01.init.nc'
 
 _mpas_file_prefix = "wofs_mpas_%2.2i.restart.2024-04-10_%s.%s.00.nc"
 
-_ncdiff_cmd = "ncdiff -O %s %s %s"
+_ncdiff_cmd = "ncdiff -O %s %s %s >/dev/null 2>&1"
 
 #=======================================================================================================
 # 
@@ -62,6 +62,9 @@ if __name__ == "__main__":
 
     parser.add_argument('--diff', dest="diff", action='store_true', default=False, 
                         help="Flag to run the ncdiff command on prior and posterior quad files")
+
+    parser.add_argument('--interp', dest="interp", action='store_true', \
+                        help="Flag to turn on 5 pt IDW interpolation", default=False)
 
     args = parser.parse_args()
 
@@ -120,6 +123,11 @@ if __name__ == "__main__":
         nc_dif = args.diff
     else:
         nc_dif = args.diff
+
+    if args.interp:
+        interp = True
+    else:
+        interp = False
         
 #=======================================================================================================
 
@@ -159,7 +167,7 @@ if __name__ == "__main__":
 
         prior_filename = parse_mpas_file(os.path.join(master_path, hhmm_str), n, hh_str, mm_str)
 
-        print(" PRIOR member name:  %s " % prior_filename )
+        print("\n PRIOR member name:  %s " % prior_filename )
 
         file_exists =  os.path.isfile(prior_filename)
 
@@ -169,10 +177,10 @@ if __name__ == "__main__":
 
             prior_quad_filename = os.path.join(local_prior, quad_filename)
 
-            print(" Now computeing %s " % prior_quad_filename)
+            print("\n Now computing %s " % prior_quad_filename)
 
             if run_it:
-                MPAS_lqg( _in_grid_file,  prior_filename, prior_quad_filename )
+                MPAS_lqg( _in_grid_file,  prior_filename, prior_quad_filename, interp=interp )
 
         else:
             print("\n ERROR:  PRIOR member does not exist...Exiting script\n")
@@ -189,7 +197,7 @@ if __name__ == "__main__":
 
         post_filename = parse_mpas_file(os.path.join(master_path, hhmm_str, fcst_dir), n, hh_str, mm_str)
 
-        print(" POSTERIOR member name:  %s " % post_filename )
+        print("\n POSTERIOR member name:  %s " % post_filename )
 
         file_exists =  os.path.isfile(post_filename)
 
@@ -199,10 +207,10 @@ if __name__ == "__main__":
 
             post_quad_filename = os.path.join(local_post, quad_filename)
 
-            print(" Now computing %s " % post_quad_filename)
+            print("\n Now computing %s " % post_quad_filename)
 
             if run_it:
-                MPAS_lqg( _in_grid_file,  post_filename, post_quad_filename )
+                MPAS_lqg( _in_grid_file,  post_filename, post_quad_filename, interp=interp )
 
         else:
             print("\n ERROR:  POSTERIOR member does not exist...Exiting script\n")
@@ -215,10 +223,9 @@ if __name__ == "__main__":
             print("\n --> NCDIFF is creating: %s\n" % diff_path)
 
             cmd = _ncdiff_cmd % (post_quad_filename, prior_quad_filename, diff_path)
-            print(" Running ncdiff command: %s" % cmd)
+            print("\n  Running ncdiff command: %s" % cmd)
 
             os.system(cmd)
-
             
 
     print("\n Finished MPAS_REGRID_BATCH process")

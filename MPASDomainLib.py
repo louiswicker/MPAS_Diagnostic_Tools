@@ -23,7 +23,7 @@ debug = 0
 
 _scale = 0.001
 
-_nearest = False
+_interp = False
 
 default_params = {
  'map_proj'  : 'lambert',
@@ -286,7 +286,7 @@ def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, \
 #
 #=======================================================================================================
 
-def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars = None, nearest = _nearest ):
+def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars = None, interp = False ):
 
     if ds_in == None:
         check = os.path.isfile(data_filename)
@@ -316,7 +316,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
 
     mtree = KDTree(coord_C)
 
-    if nearest:
+    if not interp:
         if debug > 0:
             print("\n CALC_MPAS_QUAD_GRID:  Using nearest neighbor interpolation \n")
         dis, index = mtree.query(coord_G, k=1)
@@ -338,7 +338,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
     
         if fldC.ndim == 2:
     
-            if nearest:
+            if not interp:
     
                 fld_interp = fldC[:,index].reshape(ntimes, ny, nx)
     
@@ -360,7 +360,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
             if key == 'w':     # interp w to zone centers
                 fldT = 0.5 * (fldT[:,1:,:] + fldT[:,:-1,:])
             
-            if nearest:
+            if not interp:
     
                 fld_interp = fldT[:,:,index].reshape(ntimes,nlevels,ny,nx)
     
@@ -375,7 +375,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
              
             
             interp_arrays[key] = [len(fldT.shape), fld_interp[:,:,::-1,:], ntimes, nlevels, ny, nx]
-            
+
         else:
             print("\n CALC_MPAS_QUAD_GRID: %s variable is not yet implemented, dimensions are wrong - DIMS:  %i3.3" \
                    % (out_vars[key], len(fldC.shape)))
@@ -393,6 +393,8 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
 def write_MPAS_quad_netCDF( arrays, xg, yg, zg, ntimes, outfile, latlon=False ):
 
     # Write to XARRAY file (netCDF4)
+
+    print("\n")
     
     if latlon:
     
@@ -451,7 +453,7 @@ def write_MPAS_quad_netCDF( arrays, xg, yg, zg, ntimes, outfile, latlon=False ):
     ds_new.to_netcdf(outfile, mode='w')
     ds_new.close()
     
-    print(f'\n Successfully wrote interpolated MPAS data to file:: {outfile}','\n')
+    print(f'\n Successfully wrote interpolated MPAS data to file: {outfile}')
 
 #====================================================================================================
 # WRF CODE

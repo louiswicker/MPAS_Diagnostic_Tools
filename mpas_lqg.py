@@ -18,7 +18,8 @@ dir = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/dacycles.noise4'
 
 
 varlist = ['w', 'uReconstructZonal', 'uReconstructMeridional', 'refl10cm', 'surface_pressure', 'q2', 't2m',
-           'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh', 'volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh']
+           'theta', 'rho', 'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh', 
+           'volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh']
                     
 #=======================================================================================================
 #
@@ -36,7 +37,7 @@ output_variables = list2dict(varlist, varlist)
 # 
 #=======================================================================================================
 
-def MPAS_lqg(in_grid_file, in_data_file, out_filename, nearest=True):
+def MPAS_lqg( in_grid_file, in_data_file, out_filename, interp=False ):
 
     ds_data = xr.open_dataset(in_data_file)
     ntimes  = ds_data.Time.shape[0]
@@ -58,7 +59,7 @@ def MPAS_lqg(in_grid_file, in_data_file, out_filename, nearest=True):
     xg, yg, zg, xC, yC, zC = calc_MPAS_new_grid(in_grid_file, wps_file =_wps_file, 
                                                 nx = _nx, ny = _ny, xL_grid = _xL, yL_grid = _xL)
 
-    new_grid = calc_MPAS_quad_grid( in_data_file, xC, yC, xg, yg, out_vars = output_variables, nearest = nearest )
+    new_grid = calc_MPAS_quad_grid( in_data_file, xC, yC, xg, yg, out_vars = output_variables, interp=interp )
 
     write_MPAS_quad_netCDF( new_grid, xg, yg, zg, ntimes, out_filename, latlon=sphere )
 
@@ -77,8 +78,8 @@ if __name__ == "__main__":
     parser.add_argument('-o', dest="outfile", type=str, \
                         help="Filename for interpolated out from MPAS on quad grid", default="")
 
-    parser.add_argument('--nearest', dest="nearest", action='store_false', \
-                        help="Flag to turn on 5 pt IDW interpolation", default=True)
+    parser.add_argument('--interp', dest="interp", action='store_true', \
+                        help="Flag to turn on 5 pt IDW interpolation", default=False)
 
     args = parser.parse_args()
 
@@ -99,8 +100,8 @@ if __name__ == "__main__":
     else:
         out_filename = args.outfile     
 
-    nearest = args.nearest
+    interp = args.interp
     
-    MPAS_lqg( in_grid_file, in_data_file, out_filename, nearest=nearest)
+    MPAS_lqg( in_grid_file, in_data_file, out_filename, interp=interp )
     
     print("\n Finished MPAS_LQG process")
