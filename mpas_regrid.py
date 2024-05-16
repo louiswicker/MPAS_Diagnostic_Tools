@@ -10,7 +10,7 @@ from cbook10 import list2dict, read_yaml
 
 debug = 11
 
-dir = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/dacycles.noise4'
+dir = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/dacycles.one'
 
 
 #=======================================================================================================

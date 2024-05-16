@@ -136,7 +136,7 @@ if __name__ == "__main__":
 
 #=======================================================================================================
 
-# Create local prior and posterior directories
+# Create prior and posterior directories for the output files you create
 
     local_prior = os.path.join(src_day, exp_dir, hhmm.strftime("%H%M"), 'prior')
 
@@ -160,6 +160,8 @@ if __name__ == "__main__":
 
     for n in _members:
     
+        fcst_dir = "fcst_%2.2i" % n    # need this to find correct files
+
     # PRIORS FIRST
 
         # Priors in YW structure are stored in main directory T-15        
@@ -170,7 +172,7 @@ if __name__ == "__main__":
         hh_str   = "%2.2i" % hhmm.hour
         mm_str   = "%2.2i" % hhmm.minute
 
-        prior_filename = parse_mpas_file(os.path.join(master_path, hhmm_str), n, hh_str, mm_str)
+        prior_filename = parse_mpas_file(os.path.join(master_path, hhmm_str, fcst_dir), n, hh_str, mm_str)
 
         print("\n PRIOR member name:  %s " % prior_filename )
 
@@ -197,8 +199,6 @@ if __name__ == "__main__":
         hhmm_str = hhmm.strftime("%H%M")
         hh_str   = "%2.2i" % hhmm.hour
         mm_str   = "%2.2i" % hhmm.minute
-
-        fcst_dir = "fcst_%2.2i" % n
 
         post_filename = parse_mpas_file(os.path.join(master_path, hhmm_str, fcst_dir), n, hh_str, mm_str)
 
