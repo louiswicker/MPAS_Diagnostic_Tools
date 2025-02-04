@@ -18,13 +18,13 @@ from MPASDomainLib import *
 # 
 #=======================================================================================================
 
-_members = 1 + np.arange(3)   # generate any list that you want...
+_members = [1]    # generate any list that you want...
 
 
-src_dir_top = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs'
-src_day     = '20240410'
+src_dir_top = '/scratch/ywang/MPAS/intel/run_tests/20240508/dacycles_ncar/1500/fcst_00'
+src_day     = '20240508'
 
-_in_grid_file = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/init/wofs_mpas_01.init.nc'
+_in_grid_file = '/scratch/ywang/MPAS/intel/run_tests/20240508/init/wofs_mpas_01.init.nc'
 
 _mpas_file_prefix = "wofs_mpas_%2.2i.restart.2024-04-10_%s.%s.00.nc"
 
