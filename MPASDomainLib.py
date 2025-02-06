@@ -157,7 +157,7 @@ def calc_MPAS_grid_stat( filename, ds_in = None ):
     xC = ds.xCell.values
     yC = ds.yCell.values
     zE = ds.zgrid.values[0,:]
-    zC = 0.5*(zE[1:] + zE[:-1])
+    zC = 0.5*(zE[:,1:] + zE[:,:-1])
     areaC = ds.areaCell.values / (3000**2)
     xV = ds.xVertex.values
     yV = ds.yVertex.values
@@ -251,9 +251,9 @@ def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, \
 
     if sphere:
         
-        zC = ds.zCell.values
         zE = ds.zgrid.values[0,:]
         zg = 0.5*(zE[1:] + zE[:-1])
+        zC = zg
     
         trans        = get_transformer(wps_file)  # gets info for map projection
         x_lcc, y_lcc = calc_MPAS_domain_info(ds, trans)
@@ -286,7 +286,7 @@ def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, \
             print(" NEW YG (KM): ", _scale*yg.min(), _scale*yg.max(), _scale*(yg.max()-yg.min()))
             print("\nMPAS xCells (KM): ", _scale*xC.min(), _scale*xC.max(), _scale*(xC.max()-xC.min()))
             print("\nMPAS yCells (KM): ", _scale*yC.min(), _scale*yC.max(), _scale*(yC.max()-yC.min()))
-        
+
     else:   # planner grid from idealized run?
         
         xC = ds.xCell.values
@@ -377,8 +377,19 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
     
     for key in out_vars:
         
-        fldC = ds[out_vars[key]].values
-    
+        if key == 'zgrid':  # special case
+
+            ztmp = ds[out_vars[key]].values
+
+            ztmp = 0.5*(ztmp[:,1:] + ztmp[:,:-1])
+            fldC  = np.expand_dims(ztmp, axis=0)
+
+        else:
+
+            fldC = ds[out_vars[key]].values
+
+        print(key, fldC.shape)
+
         if fldC.ndim == 2:
     
             if not interp:
@@ -399,6 +410,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
         elif fldC.ndim == 3:
     
             fldT = np.moveaxis(fldC, -1, 1)
+            print('3', fldT.shape, fldT.max())
                         
             if key == 'w':     # interp w to zone centers
                 fldT = 0.5 * (fldT[:,1:,:] + fldT[:,:-1,:])
@@ -420,7 +432,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
             interp_arrays[key] = [len(fldT.shape), fld_interp[:,:,::-1,:], ntimes, nlevels, ny, nx]
 
         else:
-            print("\n CALC_MPAS_QUAD_GRID: %s variable is not yet implemented, dimensions are wrong - DIMS:  %i3.3" \
+            print("\n CALC_MPAS_QUAD_GRID: %s variable is not yet implemented, dimensions are wrong - DIMS: %i3.3" \
                    % (out_vars[key], len(fldC.shape)))
     
     ds.close()
