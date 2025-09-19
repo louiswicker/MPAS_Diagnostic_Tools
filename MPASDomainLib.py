@@ -198,7 +198,7 @@ def calc_MPAS_grid_stat( filename, ds_in = None ):
 #
 #
 #=======================================================================================================
-def calc_MPAS_domain_info( ds, transformer):
+def calc_MPAS_domain_info( ds, transformer ):
 
     latC = np.rad2deg(ds.latCell.values)
     lonC = np.rad2deg(ds.lonCell.values)
@@ -219,7 +219,7 @@ def calc_MPAS_domain_info( ds, transformer):
 #
 #=======================================================================================================
 def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, \
-                        nx = None, ny = None, dx = 3000., xL_grid = None, yL_grid = None):
+                        nx = None, ny = None, dx = 3000., xL_grid = None, yL_grid = None ):
 
     if ds_in == None:
         

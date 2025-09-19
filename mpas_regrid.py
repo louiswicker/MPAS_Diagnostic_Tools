@@ -10,7 +10,18 @@ from cbook10 import list2dict, read_yaml
 
 debug = 11
 
-dir = '/scratch/ywang/MPAS/gnu/mpas_scripts/run_dirs/20240410/dacycles.one'
+_dir = '/work/wicker/MPAS_WRF_comp/mpas/run_dirs/20240508/1900'
+_dir_init= '/work/wicker/MPAS_WRF_comp/mpas/run_dirs/20240508/'
+
+_in_grid = os.path.join(_dir_init, 'init/wofs_gsl.invariant.nc')
+_in_file = [
+        #   'fcst_01/wofs_gsl_01.history.2024-05-08_20.00.00.nc',
+        #   'fcst_01/wofs_gsl_01.history.2024-05-08_21.00.00.nc',
+        #   'fcst_01/wofs_gsl_01.history.2024-05-08_22.00.00.nc',
+            'fcst_01/wofs_gsl_01.diag.2024-05-08_20.00.00.nc',
+            'fcst_01/wofs_gsl_01.diag.2024-05-08_21.00.00.nc',
+            'fcst_01/wofs_gsl_01.diag.2024-05-08_22.00.00.nc',
+            ]
 
 
 #=======================================================================================================
@@ -20,10 +31,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
     parser.add_argument('-i', dest="in_grid_file", type=str,
-                        help="Input file from MPAS which has grid information", default="")
+                        help="Input file from MPAS which has grid information", default=_in_grid)
                         
     parser.add_argument('-d', dest="in_data_file", type=str,
-                        help="Input file from MPAS which has data, if same as grid file, not needed",default="")
+                        help="Input file from MPAS which has data, if same as grid file, not needed",default=_in_file)
                         
     parser.add_argument('-o', dest="outfile", type=str, \
                         help="Filename for interpolated out from MPAS on quad grid", default="")
@@ -60,6 +71,15 @@ if __name__ == "__main__":
         print("\n MPAS_REGRID:  Nearest neighbor interpolation used ")
         interp = args.interp
 
-    MPAS_lqg( in_grid_file, in_data_file, out_filename, ConfigFile=args.config, interp=interp )
+    if len(in_data_file) > 1:
+
+        for file in in_data_file:
+
+            fpath = os.path.join(_dir, file)
+            out_filename = ("%s_quad.nc") % fpath[0:-3]
+            MPAS_lqg( in_grid_file, fpath, out_filename, ConfigFile=args.config, interp=interp )
+
+    else:
+        MPAS_lqg( in_grid_file, in_data_file, out_filename, ConfigFile=args.config, interp=interp )
     
     print("\n Finished MPAS_LQG process")

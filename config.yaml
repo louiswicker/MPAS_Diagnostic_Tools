@@ -7,7 +7,7 @@ QuadGrid:
 
 #VarList: ['w', 'u', 'q2', 't2m', 'theta', 'rho', 'qv', 'qc', 'qr']
 #
-VarList: ['zgrid', 'w','uReconstructZonal', 'uReconstructMeridional', 'surface_pressure', 'q2', 't2m',
-#           'theta', 'rho', 'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh',
-#          'volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh'
-           ]
+VarList: ['w','uReconstructZonal', 'uReconstructMeridional',
+          'theta', 'rho', 'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh',
+        # volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh',
+         ]
