@@ -373,8 +373,7 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
     ntimes        = ds.Time.shape[0]
     nlevels       = ds.nVertLevels.shape[0]
     nlevels_w     = ds.nVertLevelsP1.shape[0]
-    nlevels_soil  = 9
-#   nlevels_ozone = ds.nOznLevels[0]
+    nlevels_soil  = ds.nSoilLevels.shape[0]
 
     interp_arrays = {}
     
