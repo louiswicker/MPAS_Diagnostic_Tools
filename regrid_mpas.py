@@ -10,17 +10,13 @@ from cbook10 import list2dict, read_yaml
 
 debug = 11
 
-_dir = '/work/wicker/MPAS_WRF_comp/mpas/run_dirs/20240508/1900'
-_dir_init= '/work/wicker/MPAS_WRF_comp/mpas/run_dirs/20240508/'
+_dir     = '/scratch/wofs_mpas/wofuser/run_dirs/20240519/init'
+_dir_init= '/scratch/wofs_mpas/wofuser/run_dirs/20240519/init'
 
-_in_grid = os.path.join(_dir_init, 'init/wofs_gsl.invariant.nc')
+_in_grid = os.path.join(_dir_init, 'mpas_d1.invariant.nc')
 _in_file = [
-        #   'fcst_01/wofs_gsl_01.history.2024-05-08_20.00.00.nc',
-        #   'fcst_01/wofs_gsl_01.history.2024-05-08_21.00.00.nc',
-        #   'fcst_01/wofs_gsl_01.history.2024-05-08_22.00.00.nc',
-            'fcst_01/wofs_gsl_01.diag.2024-05-08_20.00.00.nc',
-            'fcst_01/wofs_gsl_01.diag.2024-05-08_21.00.00.nc',
-            'fcst_01/wofs_gsl_01.diag.2024-05-08_22.00.00.nc',
+            'mpas_d1_17.init.nc',
+            'mpas_d1_23.init.nc',
             ]
 
 
@@ -76,10 +72,15 @@ if __name__ == "__main__":
         for file in in_data_file:
 
             fpath = os.path.join(_dir, file)
-            out_filename = ("%s_quad.nc") % fpath[0:-3]
+        #   out_filename = ("%s_quad.nc") % fpath[0:-3]
+            out_filename = ("%s_quad.nc") % file
+
+            print(out_filename)
+
             MPAS_lqg( in_grid_file, fpath, out_filename, ConfigFile=args.config, interp=interp )
 
     else:
+
         MPAS_lqg( in_grid_file, in_data_file, out_filename, ConfigFile=args.config, interp=interp )
     
     print("\n Finished MPAS_LQG process")

@@ -370,8 +370,11 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
         wght = 1.0 / dis**2
         wsum = 1.0 / np.sum(wght, axis=1)
 
-    ntimes  = ds.Time.shape[0]
-    nlevels = ds.nVertLevels.shape[0]
+    ntimes        = ds.Time.shape[0]
+    nlevels       = ds.nVertLevels.shape[0]
+    nlevels_w     = ds.nVertLevelsP1.shape[0]
+    nlevels_soil  = 9
+#   nlevels_ozone = ds.nOznLevels[0]
 
     interp_arrays = {}
     
@@ -405,31 +408,50 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
     
                 fld_interp = np.array(fld_interp).reshape(ntimes, ny, nx)
              
-            interp_arrays[key] = [len(fldC.shape), fld_interp[:,::-1,:], ntimes, ny, nx]
+            interp_arrays[key] = [2, fld_interp[:,::-1,:], ntimes, ny, nx]
         
         elif fldC.ndim == 3:
     
             fldT = np.moveaxis(fldC, -1, 1)
-            print('3', fldT.shape, fldT.max())
+            mz   = fldT.shape[1]
+
+            match mz:
                         
-            if key == 'w':     # interp w to zone centers
-                fldT = 0.5 * (fldT[:,1:,:] + fldT[:,:-1,:])
+                case x if x == nlevels_w:
+                    fldT = 0.5 * (fldT[:,1:,:] + fldT[:,:-1,:])
+                    mz = mz - 1
+
+                case x if x == nlevels:
+                    pass      # normal 3D Array
+
+                case x if x == nlevels_soil:
+                    print(f"\nNow interpolating soil and albedo, nlevels = {mz}")
+
+                case _:
+                    print(f"\nWeird number of vertical levels found, nlevels = {mz}")
+                    print(f"\nWeird number of vertical levels found, nlevels = {nlevels_soil}")
             
             if not interp:
     
-                fld_interp = fldT[:,:,index].reshape(ntimes,nlevels,ny,nx)
+                fld_interp = fldT[:,:,index].reshape(ntimes,mz,ny,nx)
     
             else:  #IDW
     
                 fld_interp = []
                 for n in np.arange(ntimes):
-                    for k in np.arange(nlevels):
+                    for k in np.arange(mz):
                         fld_interp.append( np.sum(wght * fldT[n,k].flatten()[index], axis=1) * wsum )
     
-                fld_interp = np.array(fld_interp).reshape(ntimes,nlevels,ny,nx)
-             
-            
-            interp_arrays[key] = [len(fldT.shape), fld_interp[:,:,::-1,:], ntimes, nlevels, ny, nx]
+                fld_interp = np.array(fld_interp).reshape(ntimes,mz,ny,nx)
+
+            match mz:
+                        
+                case x if x == nlevels:
+                    interp_arrays[key] = [3, fld_interp[:,:,::-1,:], ntimes, mz, ny, nx]
+           
+                case _:
+                    interp_arrays[key] = [22, fld_interp[:,:,::-1,:], ntimes, mz, ny, nx]
+
 
         else:
             print("\n CALC_MPAS_QUAD_GRID: %s variable is not yet implemented, dimensions are wrong - DIMS: %i3.3" \
@@ -477,7 +499,25 @@ def write_MPAS_quad_netCDF( arrays, xg, yg, zg, ntimes, outfile, latlon=False ):
                                             "x": (["nx"], xg),
                                             "y": (["ny"], yg) } )
 
-        else:
+        elif arrays[key][0] == 22:  # 2.5D spatial data set like soil
+
+            if latlon:
+                new = xr.DataArray( arrays[key][1], dims = ['nt', 'nlayer', 'ny', 'nx'],
+                                    coords={"time": (["nt"], np.arange(ntimes)),
+                                             "lon": (["ny","nx"], lonC),
+                                             "lat": (["ny","nx"], latC),
+                                           "layer": (["nlayer"], np.arange(arrays[key][1].shape[1])) } )
+
+
+            else:
+            
+                new = xr.DataArray( arrays[key][1], dims = ['nt', 'nz', 'ny', 'nx'],
+                                    coords={"time": (["nt"], np.arange(ntimes)),
+                                               "x": (["nx"], xg),
+                                               "y": (["ny"], yg),
+                                           "layer": (["nlayer"], np.arange(arrays[key][1].shape[1])) } )
+
+        else:  # 3D grid
 
             if latlon:
                 new = xr.DataArray( arrays[key][1], dims = ['nt', 'nz', 'ny', 'nx'],

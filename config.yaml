@@ -5,9 +5,10 @@ QuadGrid:
 - 300               # number of points in x
 - 300               # number of points in y
 
+VarList: ['tslb','smois','sh2o','sfc_albbck']
 #VarList: ['w', 'u', 'q2', 't2m', 'theta', 'rho', 'qv', 'qc', 'qr']
 #
-VarList: ['w','uReconstructZonal', 'uReconstructMeridional',
-          'theta', 'rho', 'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh',
-        # volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh',
-         ]
+#VarList: ['w','uReconstructZonal', 'uReconstructMeridional',
+#          'theta', 'rho', 'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh',
+#        # volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh',
+#         ]
