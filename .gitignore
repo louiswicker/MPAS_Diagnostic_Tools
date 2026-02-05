@@ -1,0 +1,12 @@
+*.mod
+*.a
+*.o
+*.png
+*.pdf
+*.log
+*.nc
+*.output
+*log
+*.exe
+out.*
+~
