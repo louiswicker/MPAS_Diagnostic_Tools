@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser.add_argument('-g', dest="in_grid_file", type=str,
                         help="Input file from MPAS which has grid information", default="")
                         
-    parser.add_argument('-h', dest="in_data_file", type=str,
+    parser.add_argument('-f', dest="in_data_file", type=str,
                         help="Input history file from MPAS ", default="")
                         
     parser.add_argument('-o', dest="outfile", type=str, \
