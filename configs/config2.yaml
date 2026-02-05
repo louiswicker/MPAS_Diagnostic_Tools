@@ -5,9 +5,9 @@ QuadGrid:
 - 300               # number of points in x
 - 300               # number of points in y
 
-VarList: ['w', 'u', 'q2', 't2m', 'theta', 'rho', 'qv', 'qc', 'qr']
+VarList: ['w', 'u', 'theta', 'rho', 'qv', 'qc', 'qr']
 #
 #VarList: ['w', 'theta', 'rho', 'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh',
 #VarList: ['zgrid', 
         # volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh',
-         ]
+#        ]

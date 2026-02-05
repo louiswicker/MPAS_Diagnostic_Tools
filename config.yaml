@@ -1,14 +1,16 @@
 QuadGrid:
 
 - 'namelist.wps'    # input wps file (not needed as much)
-- 900.e3            # Size of horizontal domain in m
-- 300               # number of points in x
-- 300               # number of points in y
+- 80.e3            # Size of horizontal domain in m
+- 80               # number of points in x
+- 80               # number of points in y
 
-VarList: ['tslb','smois','sh2o','sfc_albbck']
+#VarList: ['tslb','smois','sh2o','sfc_albbck']
 #VarList: ['w', 'u', 'q2', 't2m', 'theta', 'rho', 'qv', 'qc', 'qr']
 #
+VarList: ['w',
 #VarList: ['w','uReconstructZonal', 'uReconstructMeridional',
-#          'theta', 'rho', 'qv', 'qc', 'qr', 'qi', 'qs', 'qg', 'qh',
+#         'theta', 'rho', 'qv', 'qc', 'qr'
+#         'qc', 'qr', 'qi', 'qs', 'qg', 'qh',
 #        # volg', 'volh', 'nc', 'nr', 'ni', 'ns', 'ng', 'nh',
-#         ]
+         ]

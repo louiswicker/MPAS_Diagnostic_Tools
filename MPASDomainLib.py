@@ -26,13 +26,13 @@ _scale = 0.001
 
 _interp = False
 
-default_params = {
+default_projection = {
  'map_proj'  : 'lambert',
  'ref_lat'   :  35.00,
- 'ref_lon'   : -90.00,
+ 'ref_lon'   : -92.00,
  'truelat1'  :  30.0,
  'truelat2'  :  60.0,
- 'stand_lon' : -90.0,
+ 'stand_lon' : -92.0,
                  }
 
 #=======================================================================================================
@@ -45,16 +45,21 @@ default_params = {
 
 def MPAS_lqg( in_grid_file, in_data_file, out_filename, ConfigFile='config.yaml', interp=False ):
 
+    #ds_data = xr.open_dataset(in_data_file, engine='netcdf4')
     ds_data = xr.open_dataset(in_data_file)
     ntimes  = ds_data.Time.shape[0]
     ds_data.close()
 
     ds_grid = xr.open_dataset(in_grid_file)
+
     try:
-        if ds_grid.on_a_sphere == "YES":
+        if ds_grid.on_a_sphere.strip() == "YES":
             sphere = True
+        else:
+            sphere = False
     except:
         sphere = False
+
     ds_grid.close()
 
     if debug > 100:
@@ -70,8 +75,11 @@ def MPAS_lqg( in_grid_file, in_data_file, out_filename, ConfigFile='config.yaml'
 
     # Most of the work in the main routine is setting up a new horizontal grid
 
-    xg, yg, zg, xC, yC, zC = calc_MPAS_new_grid(in_grid_file, wps_file =_wps_file,
-                                                nx = _nx, ny = _ny, xL_grid = _xL, yL_grid = _xL)
+    xg, yg, zg, xC, yC, zC = calc_MPAS_new_grid(in_data_file, 
+                                                wps_file =_wps_file, 
+                                                sphere = sphere,
+                                                nx = _nx, ny = _ny, 
+                                                xL_grid = _xL, yL_grid = _xL)
 
     new_grid = calc_MPAS_quad_grid( in_data_file, xC, yC, xg, yg, out_vars = output_variables, interp=interp )
 
@@ -82,7 +90,7 @@ def get_wps_param_value(wps_file, param_name, vartype):
 
     def read_default():
         try:
-            output = default_params[param_name]
+            output = default_projection[param_name]
             return output
         except KeyError:
             print("\n GET_WPS_PARAM: Invalid parameter name not in defaults, exiting...\n")
@@ -218,11 +226,12 @@ def calc_MPAS_domain_info( ds, transformer ):
 #
 #
 #=======================================================================================================
-def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, \
+def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, sphere = False,
                         nx = None, ny = None, dx = 3000., xL_grid = None, yL_grid = None ):
 
     if ds_in == None:
         
+        print(grid_filename)
         check = os.path.isfile(grid_filename)
 
         if check:
@@ -242,12 +251,6 @@ def calc_MPAS_new_grid( grid_filename, ds_in = None, wps_file = None, \
     if nx == None and ny == None and xL == None and yL == None:
         print("\n CALC_MPAS_NEW_GRID: Not enough domain information...stopping\n")
         sys.exit(1)
-
-    try:
-        if ds.on_a_sphere == "YES":
-            sphere = True
-    except:
-        sphere = False
 
     if sphere:
         
@@ -373,7 +376,11 @@ def calc_MPAS_quad_grid( data_filename, xC, yC, xg, yg, ds_in = None, out_vars =
     ntimes        = ds.Time.shape[0]
     nlevels       = ds.nVertLevels.shape[0]
     nlevels_w     = ds.nVertLevelsP1.shape[0]
-    nlevels_soil  = ds.nSoilLevels.shape[0]
+
+    try:
+        nlevels_soil  = ds.nSoilLevels.shape[0]
+    except:
+        nlevels_soil = 0
 
     interp_arrays = {}
     
