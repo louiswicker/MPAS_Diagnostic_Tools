@@ -28,8 +28,8 @@ if __name__ == "__main__":
     parser.add_argument('-g', dest="in_grid_file", type=str,
                         help="Input file from MPAS which has grid information", default="")
                         
-    parser.add_argument('-d', dest="in_data_file", type=str,
-                        help="Input file from MPAS which has data, if same as grid file, not needed",default="")
+    parser.add_argument('-h', dest="in_data_file", type=str,
+                        help="Input history file from MPAS ", default="")
                         
     parser.add_argument('-o', dest="outfile", type=str, \
                         help="Filename for interpolated out from MPAS on quad grid", default="")

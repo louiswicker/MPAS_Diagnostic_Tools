@@ -18,7 +18,7 @@ options:
 
 * -h, --help       show this help message and exit
 * -g IN_GRID_FILE  Input file from MPAS which has grid information
-* -d IN_DATA_FILE  Input file from MPAS which has output data
+* -h IN_DATA_FILE  Input file from MPAS which has output data
 * -o OUTFILE       Filename for interpolated out from MPAS on quad grid
 * --interp         Flag to turn on 5 pt IDW interpolation
 
