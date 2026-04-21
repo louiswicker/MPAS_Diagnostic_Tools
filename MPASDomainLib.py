@@ -75,7 +75,8 @@ def MPAS_lqg( in_grid_file, in_data_file, out_filename, ConfigFile='config.yaml'
 
     # Most of the work in the main routine is setting up a new horizontal grid
 
-    xg, yg, zg, xC, yC, zC = calc_MPAS_new_grid(in_data_file, 
+    #xg, yg, zg, xC, yC, zC = calc_MPAS_new_grid(in_data_file, 
+    xg, yg, zg, xC, yC, zC = calc_MPAS_new_grid(in_grid_file, 
                                                 wps_file =_wps_file, 
                                                 sphere = sphere,
                                                 nx = _nx, ny = _ny, 
